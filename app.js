@@ -29,7 +29,7 @@ app.use(passport.session());
 
 ///////////////////////////MONGOOSE DATABASE SETTINGS//////////////////////////////////
 
-mongoose.connect("mongodb://localhost:27017/attendanceDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://admin-amith:muscat555@cluster0.l2802.mongodb.net/attendanceDB", {useNewUrlParser: true, useUnifiedTopology: true});
 
 const userSchema = new mongoose.Schema({
     username: String,
@@ -71,6 +71,7 @@ passport.use(new GoogleStrategy({
       console.log(profile.displayName);
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
         user['username'] = profile.displayName;
+        user.save();
         console.log(user);
         return cb(err, user);
     });
@@ -149,6 +150,6 @@ app.get("/logout", function(req, res) {
 });
 
 
-app.listen(3000, function(){
-    console.log("The App is running on port 3000");
+app.listen(process.env.PORT || 3000, function(){
+    console.log("The App has started running successfully");
 });
