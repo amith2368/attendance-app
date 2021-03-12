@@ -1,0 +1,29 @@
+<%- include("partials/header"); -%>
+
+    <section class="home-page">
+        <div class="container-fluid">         
+            <div class="row">
+                <div class="col-md-6 login-pic">
+                    <h3>Welcome to</h3>
+                    <h1>iAttendance App</h1>
+                </div>
+                <div class="col-md-6 login-detail">
+                    <h1>Sign-In</h1>
+                    <form class="mt-3" action="/login" method="POST">
+                        <a class="btn btn-lg btn-primary" href="/auth/google" role="button"><i class="fab fa-google"></i> Sign in with Google</a>
+                        <p>Or Sign up with your Email</p>
+                        <label class="form-label" for="username">Username</label>
+                        <input class="form-control" type="text" name="username">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-control" type="password" name="password">
+                        <button class="btn btn-primary mt-3 mb-5" type="submit">Login</button>
+                    </form> 
+                    <p>Don't have an account? Click below to register.</p>
+                    <a href="/register"><button class="btn btn-secondary">Register</button></a>
+                </div>
+            </div>        
+        </div>
+    </section>
+
+
+<%- include('partials/footer'); -%>

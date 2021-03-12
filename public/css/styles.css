@@ -1,0 +1,26 @@
+.home-page {
+  width:100%;
+}
+
+.login-pic {
+  position: relative;
+  background-color: grey;
+  color: #fff;
+  padding-top: 20%;
+  padding-bottom: 22%;
+  padding-left: 20%;
+}
+
+.login-detail {
+  padding-top: 5%;
+}
+
+.login-detail .form-control {
+  width: 50%;
+}
+
+.register-detail {
+  width: 60%;
+  margin-top: 10%;
+  margin-left: 10%;
+}
