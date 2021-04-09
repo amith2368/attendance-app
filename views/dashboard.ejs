@@ -1,11 +1,73 @@
 <%- include("partials/header"); -%>
 
-
+<div class="container">
 
 <h1>Welcome to your Dashboard, <%= user.username %> </h1>
 <a class="btn btn-danger" href="/logout" role="button">Logout</a>
 
+<% if (user.role === "student" && !(user.batch)) { %>
+    <form action="/altChoice" method="POST">
+        <div class="form-group col-md-4">
+            <label for="inputState1">Please choose your batch: </label>
+            <select id="inputState1" name="batch" class="form-control">
+              <option selected value="2020CED">2020 CED</option>
+              <option value="2020CED">2021</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">Submit</button>    
+    </form>
+<% } %>
 
+<% if (user.role === "teacher") { %>
+    <a class="btn btn-dark btn-lg" href="/submit" role="button">Create a new Attendance</a>
+    <h1> Your Scheduled Attendances</h1>
 
+    <% attendance.forEach(element => { %>
+        <div class="row">
+            <div class="card col-md-6">
+                <h1>Attendance-Form</h1>
+                <ul>
+                    <li>Batch: <%= element.batch %></li>
+                    <li>Course: <%= element.course %></li>
+                    <li>Deadline Time: <%= element.deadline %></li>
+                    <li>Posted By: <%= element.postedBy %> </li>
+                    <li>Students Attended: <%= element.attendedBy.length %>  </li>
+                </ul>
+                <button class="btn btn-primary">Edit</button>
+                <button class="btn btn-warning">Delete</button>
+                <button class="btn btn-dark">Details</button>
+            </div>    
+        </div>
+        <hr>
+    <% }) %>
+<% } %>
+
+<% if (user.role === "student") { %>
+    <h2>Welcome to <%= user.batch %> Scheduled attendance</h2>
+    <% attendance.forEach(element => { %>
+        <div class="row">
+            <div class="card col-md-6">
+                <h1>Attendance-Form</h1>
+                <ul>
+                    <li>Batch: <%= element.batch %></li>
+                    <li>Course: <%= element.course %></li>
+                    <li>Deadline Time: <%= element.deadline %></li>
+                    <li>Posted By: <%= element.postedBy %> </li>
+                    <li>Students Attended: <%= element.attendedBy.length %>  </li>
+                </ul>
+                <% if (element.attendedBy.includes(user.username)) { %>
+                    <button type="submit" class="btn btn-secondary">Attendance Given</button>
+                <% } else { %>
+                <form action="/giveAtt/<%= element._id %>" method="POST"> 
+                    <button type="submit" class="btn btn-primary">Give Attendance</button>
+                </form>
+                <% } %>
+            </div>    
+        </div>
+        <hr>
+    <% }) %> 
+<% } %>
+
+</div>
 
 <%- include('partials/footer'); -%>

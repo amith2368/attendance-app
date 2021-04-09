@@ -35,18 +35,26 @@ const userSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: String,
-    googleId: String
+    googleId: String,
+    role: String,
+    batch: String,
+});
+
+const attendanceSchema = new mongoose.Schema({
+    batch: String,
+    course: String,
+    deadline: Number,
+    postedBy: String,
+    attendedBy: [String],
+    attendedNo: Number
 });
 
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
 const User = mongoose.model("User", userSchema);
-// const user = new User({
-//     email: "Bruh",
-//     password: "12345"
-// });
-// user.save();
+const Attendance = mongoose.model("Attendance", attendanceSchema);
+
 
 // CHANGE: USE "createStrategy" INSTEAD OF "authenticate"
 passport.use(User.createStrategy());
@@ -68,9 +76,12 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/auth/google/attendance"
   },
   function(accessToken, refreshToken, profile, cb) {
-      console.log(profile.displayName);
+    console.log(profile.displayName);
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
         user['username'] = profile.displayName;
+        if (user['role'] === "student") {
+            user['role'] = "student";
+        }
         user.save();
         console.log(user);
         return cb(err, user);
@@ -88,7 +99,18 @@ app.get("/", function(req, res){
 
 app.get("/dashboard", function(req, res) {
     if (req.isAuthenticated()) {
-        res.render("dashboard", {user: req.user});
+
+        if (req.user.role === "teacher") {
+            Attendance.find({postedBy: req.user.username }, function(err, found){
+                console.log(req.user);
+                res.render("dashboard", {user: req.user, attendance: found }); 
+            });
+        } else if (req.user.role === "student") {
+            Attendance.find({batch: req.user.batch }, function(err, found){
+                console.log(req.user);
+                res.render("dashboard", {user: req.user, attendance: found }); 
+            });    
+        }
     } else {
         res.redirect("/");
     }
@@ -107,11 +129,17 @@ app.get('/auth/google/attendance',
 
 
 app.post("/register", function(req, res) {
+    console.log(req.body);
     User.register({username: req.body.username}, req.body.password, function(err, user){
         if (err) {
             console.log(err);
             res.redirect("/register");
         } else {
+            user['email'] = req.body.email;
+            user['role'] = "student";
+            user['batch'] = req.body.batch;
+            user.save();
+            console.log(user);
             passport.authenticate("local")(req, res, function(){
                 res.redirect("/dashboard");
             });
@@ -125,7 +153,7 @@ app.post("/login", function (req, res) {
     const user = new User({
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
     });
 
     req.login(user, function(err){
@@ -138,6 +166,43 @@ app.post("/login", function (req, res) {
         }
     });
 });
+
+app.get("/submit", function(req, res) {
+    if (req.isAuthenticated()) {
+        res.render("submit",  {user: req.user});
+    } else {
+        res.redirect("/");
+    }
+});
+
+app.post("/submit", function(req, res) {
+    console.log(req.user + req.body); 
+    const attendance = new Attendance({
+        batch: req.body.batch,
+        course: req.body.course,
+        deadline: req.body.deadline,
+        postedBy: req.user.username
+    });
+    attendance.save();
+    res.redirect("/dashboard");
+});
+
+
+app.post("/giveAtt/:attID", function(req, res) {
+    console.log("Given Attendance" + req.params.attID);
+    Attendance.findById(req.params.attID, function (err, foundAtt){
+        if (err) {
+            console.log(err)
+        } else {
+            if(foundAtt) {
+                foundAtt['attendedBy'].push(req.user.username);
+                foundAtt.save();
+                console.log(foundAtt);
+                res.redirect("/dashboard");
+            }
+        }
+    });
+}); 
 
 app.get("/register", function(req, res) {
     res.render("register");
