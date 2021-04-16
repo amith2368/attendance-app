@@ -1,14 +1,32 @@
+body {
+  background-image: url("../images/Pattern.png");
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
 .home-page {
   width:100%;
 }
 
 .login-pic {
   position: relative;
-  background-color: grey;
   color: #fff;
   padding-top: 20%;
   padding-bottom: 22%;
   padding-left: 20%;
+}
+
+.heading-span {
+  position: relative;
+  bottom: 15px;
+}
+
+.heading {
+  display: inline;
+  font-size: 2.7em;
 }
 
 .login-detail {
@@ -19,8 +37,68 @@
   width: 50%;
 }
 
+.reg-card {
+  opacity: 0.5;
+}
+
 .register-detail {
   width: 60%;
   margin-top: 10%;
   margin-left: 10%;
+}
+
+.btn-original {
+  background-color: #3f1a48;
+  color: #bfb3c2; 
+  border: none;
+}
+
+.bg-original {
+  background: #c31432;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #240b36, #c31432);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #240b36, #c31432); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #bfb3c2; 
+}
+
+.btn-original:hover {
+  color: #fff;
+}
+
+
+
+.rounded
+{ 
+  border-radius : 100px;
+  height : 200px;
+  padding-top : 25px;
+  padding-left : 30px;
+  padding-right : 30px;
+  margin-top : 20px;
+}
+
+.acc
+{ 
+  position : relative;
+  top : -20px;
+}
+
+.att-title {
+  font-size: 25px;
+  font-family: 'Zen Dots', cursive;
+  margin-top: 10px;
+}
+
+.att-sub {
+  font-size: 40px;
+  font-family: 'Exo 2', sans-serif;
+  margin-bottom: 10px;
+}
+
+.att-detail {
+  font-family: 'Exo 2', sans-serif;
+}
+
+.card {
+  margin: 5px;
+  display: block;
 }

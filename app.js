@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
 const attendanceSchema = new mongoose.Schema({
     batch: String,
     course: String,
-    deadline: Number,
+    deadline: String,
     postedBy: String,
     attendedBy: [String],
     attendedNo: Number
@@ -67,7 +67,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
     User.findById(id, function(err, user) {
         done(err, user);
-    });
+    }); 
 });
 
 passport.use(new GoogleStrategy({
@@ -82,6 +82,9 @@ passport.use(new GoogleStrategy({
         if (user['role'] === "student") {
             user['role'] = "student";
         }
+        // if (user['batch'] === null) {
+        //     user['batch'] = "null";
+        // } 
         user.save();
         console.log(user);
         return cb(err, user);
@@ -99,17 +102,44 @@ app.get("/", function(req, res){
 
 app.get("/dashboard", function(req, res) {
     if (req.isAuthenticated()) {
-
+        console.log("Logged in");
         if (req.user.role === "teacher") {
             Attendance.find({postedBy: req.user.username }, function(err, found){
-                console.log(req.user);
+                console.log(found);
+                let todayDeadline = found.filter(item => {
+                    let n = item.deadline;
+                    let res = n.split(/ |-|:/);
+                    let dd = new Date(res[0],res[1] - 1, res[2], res[3], res[4]);
+                    let current = new Date() 
+                    return current < dd;
+                })
                 res.render("dashboard", {user: req.user, attendance: found }); 
             });
-        } else if (req.user.role === "student") {
+        } else if (req.user.role === "student" && req.user.batch) {
             Attendance.find({batch: req.user.batch }, function(err, found){
                 console.log(req.user);
-                res.render("dashboard", {user: req.user, attendance: found }); 
+                console.log(found);
+                let todayDeadline = found.filter(item => {
+                    let n = item.deadline;
+                    let res = n.split(/ |-|:/);
+                    let dd = new Date(res[0],res[1] - 1, res[2], res[3], res[4]);
+                    let current = new Date() 
+                    return current < dd;
+                });
+
+                let expiredDeadline = found.filter(item => {
+                    let n = item.deadline;
+                    let res = n.split(/ |-|:/);
+                    let dd = new Date(res[0],res[1] - 1, res[2], res[3], res[4]);
+                    let current = new Date() 
+                    return current > dd;
+                });
+
+                console.log(todayDeadline);
+                res.render("dashboard", {user: req.user, attendance: todayDeadline, expired: expiredDeadline }); 
             });    
+        } else {
+            res.render("dashboard", {user: req.user });
         }
     } else {
         res.redirect("/");
@@ -169,18 +199,65 @@ app.post("/login", function (req, res) {
 
 app.get("/submit", function(req, res) {
     if (req.isAuthenticated()) {
-        res.render("submit",  {user: req.user});
+        res.render("submit",  {user: req.user, details: false});
     } else {
         res.redirect("/");
     }
 });
 
+app.post("/googleEdit", function(req, res) {
+    User.findOne({username: req.user.username},(err, user) => {
+        if (err) {
+            console.log(err);
+        } else {
+            user["role"] = "student";
+            user["batch"] = req.body.batch;
+            user.save();
+            res.redirect("/dashboard");
+        }
+    });
+    
+});
+
+app.get("/edit/:attID", function(req, res) {
+    Attendance.findById(req.params.attID, function (err, foundAtt){
+        if (err) {
+            console.log(err);
+        } else {
+            if(foundAtt) {
+                res.render("submit", {user: req.user, details: foundAtt});
+            }
+        }
+    })
+});
+
+app.get("/delete/:attID", function(req, res) {
+    Attendance.findByIdAndDelete(req.params.attID, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Deleted");
+            res.redirect("/dashboard");
+        }   
+    })
+});
+
+app.get("/detail/:attID", function(req, res) {
+    Attendance.findById(req.params.attID, function(err, foundAtt){
+        if (err) {
+            console.log(err)
+        } else {
+            res.render("detail", {element: foundAtt});
+        }
+    });
+});
+
 app.post("/submit", function(req, res) {
-    console.log(req.user + req.body); 
+    console.log(req.body); 
     const attendance = new Attendance({
         batch: req.body.batch,
         course: req.body.course,
-        deadline: req.body.deadline,
+        deadline: req.body.dd,
         postedBy: req.user.username
     });
     attendance.save();

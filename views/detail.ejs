@@ -1,0 +1,29 @@
+<%- include("partials/header"); -%>
+
+<h1>Details About the Attendance</h1>
+<ul>
+    <li>Batch: <%= element.batch %></li>
+    <li>Course: <%= element.course %></li>
+    <li>Deadline Time: <%= element.deadline %></li>
+    <li>Posted By: <%= element.postedBy %> </li>
+    <li>Students Attended: <%= element.attendedBy.length %></li>
+</ul>
+<h1>Students Attended:</h1>
+<ul>
+<% element.attendedBy.forEach(student => { %>
+    <li><%= student %> </li>
+<% }) %>
+</ul>
+<a href="/edit/<%= element._id %>"><button class="btn btn-primary">Edit</button></a>
+<a href="/delete/<%= element._id %>"><button class="btn btn-danger">Delete</button></a>
+
+
+
+
+
+
+
+
+
+
+<%- include('partials/footer'); -%>

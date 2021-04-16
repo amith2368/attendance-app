@@ -1,9 +1,39 @@
 <%- include("partials/header"); -%>
 
-<div class="container">
+ 
+  <!-- Modal -->
+  <% if (!user.batch && (user.role != "teacher")) { %>
+   
+  
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Attendance App Settings</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="/googleEdit" method="POST">
+        <div class="modal-body">
+            <h3>Choose your batch</h3>
+            <input type="radio" name="batch" value="2020CED">
+            <label for="2020CED">2020CED</label><br>
+            <input type="radio" name="batch" value="2021COE">
+            <label for="2021COE">2021COE</label><br>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+  <% } %>
 
-<h1>Welcome to your Dashboard, <%= user.username %> </h1>
-<a class="btn btn-danger" href="/logout" role="button">Logout</a>
+
+<div class="container">
 
 <% if (user.role === "student" && !(user.batch)) { %>
     <form action="/altChoice" method="POST">
@@ -19,53 +49,143 @@
 <% } %>
 
 <% if (user.role === "teacher") { %>
+  <div class = "container rounded bg-original"> 
+    <div class = "row">
+      <div class = "col text-white">
+          <h1> Welcome, </h1>
+          <h3><%= user.username %></h3>
+      </div>
+      <div class = "col">
+        <a href="/logout" class = "btn btn-sm btn-success float-right my-2" type = "submit"> Logout </a>  
+      </div>
+    </div>
     <a class="btn btn-dark btn-lg" href="/submit" role="button">Create a new Attendance</a>
-    <h1> Your Scheduled Attendances</h1>
+    <h1 class="mt-5 text-white"> Your Scheduled Attendances</h1>
 
+    <div class="row">
+    <% attendance.forEach(element => { %>
+            <div class="card col-md-6">
+                <ul>
+                  <li class="att-title"><%= element.course %></li>
+                  <li class="att-sub"><%= element.deadline %> </li>    
+                  <li class="att-detail"><strong>Batch: </strong> <%= element.batch %></li>
+                  <li class="att-detail"><strong>Posted By: </strong><%= element.postedBy %></li>
+                  <li class="att-detail"><strong>Deadline: </strong><%= element.deadline %> </li>
+                  <li class="att-detail"><strong>Students Attended: </strong> <%= element.attendedBy.length %>  </li>
+                </ul>
+                <div class="btn-group" role="group" aria-label="Options">
+                  <a class="btn btn-warning" href="/edit/<%= element._id %>">Edit</a>
+                  <a class="btn btn-danger" href="/delete/<%= element._id %>">Delete</a>
+                  <a class="btn btn-primary" href="/detail/<%= element._id %>">Details</a>
+                </div>  
+            </div>    
+        
+        <hr>
+    <% }) %>
+    </div>
+<% } %>
+
+<% if (user.role === "student") { %>
+  <div class = "container rounded bg-original"> 
+    <div class = "row">
+      <div class = "col text-white">
+          <h1> Welcome! </h1>
+          <h3><%= user.username %></h3>
+          <h3>Batch: <%= user.batch %> </h3>
+      </div>
+
+      <div class = "col">
+        <a href="/logout" class = "btn btn-sm btn-success float-right my-2" type = "submit"> Logout </a>  
+      </div>
+    </div>  
+  </div>
+  
+
+  <div class = "accordion acc" id = "dropdown-menu">
+  
+  <div class = "container"> 
+    <div class = "row">
+      <div class = "col-6">
+        <div class = "card shadow" style="border-radius: 30px; margin-bottom: 30px;">
+          <div class = "card-header" id = "Present-Attendance">
+            <div class = "btn btn-link" type = "button" data-toggle = "collapse" data-target = "#collapseOne" aria-expanded = "true" aria-controls = "collapseOne" >
+              Present Attendance 
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class = "col-6">
+        <div class = "card shadow" style="border-radius: 30px; margin-bottom: 30px;">
+          <div class = "card-header" id = "Past-Attendance" >
+            <div class = "btn btn-link" type = "button" data-toggle = "collapse" data-target = "#collapseTwo" aria-expanded="true"  aria-controls = "collapseTwo">
+              Past Attendances 
+            </div> 
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <div class="row">
+    <div class="col-md-6">
+    <div id = "collapseOne" class = "collapse" aria-labelledby = "Present-Attendance" data-parent = "#dropdown-menu">
     <% attendance.forEach(element => { %>
         <div class="row">
-            <div class="card col-md-6">
-                <h1>Attendance-Form</h1>
+            <div class="card" style="border-radius: 15px; width: 100%;">
                 <ul>
-                    <li>Batch: <%= element.batch %></li>
-                    <li>Course: <%= element.course %></li>
-                    <li>Deadline Time: <%= element.deadline %></li>
-                    <li>Posted By: <%= element.postedBy %> </li>
-                    <li>Students Attended: <%= element.attendedBy.length %>  </li>
+                    <li class="att-title"><%= element.course %></li>
+                    <li class="att-sub"><%= element.deadline %> </li>    
+                    <li class="att-detail"><strong>Batch: </strong> <%= element.batch %></li>
+                    <li class="att-detail"><strong>Posted By: </strong><%= element.postedBy %></li>
+                    <li class="att-detail"><strong>Deadline: </strong><%= element.deadline %> </li>
+                    <li class="att-detail"><strong>Students Attended: </strong> <%= element.attendedBy.length %>  </li>
                 </ul>
-                <button class="btn btn-primary">Edit</button>
-                <button class="btn btn-warning">Delete</button>
-                <button class="btn btn-dark">Details</button>
+                <% if (element.attendedBy.includes(user.username)) { %>
+                    <button type="submit" class="btn btn-secondary" disabled >Attendance Given</button>
+                <% } else { %>
+                <form action="/giveAtt/<%= element._id %>" method="POST"> 
+                    <button type="submit" class="btn btn-primary btn-block">Give Attendance</button>
+                </form>
+                <% } %>
+                <br>
             </div>    
         </div>
         <hr>
     <% }) %>
-<% } %>
+  </div>
+  </div> 
 
-<% if (user.role === "student") { %>
-    <h2>Welcome to <%= user.batch %> Scheduled attendance</h2>
-    <% attendance.forEach(element => { %>
+  <div class="col-md-6">
+  <div id = "collapseTwo" class = "collapse" aria-labelledby = "Past-Attendance" data-parent = "#dropdown-menu">
+    <% expired.forEach(element => { %>
         <div class="row">
-            <div class="card col-md-6">
-                <h1>Attendance-Form</h1>
+            <div class="card" style="border-radius: 15px; width: 100%">
                 <ul>
-                    <li>Batch: <%= element.batch %></li>
-                    <li>Course: <%= element.course %></li>
-                    <li>Deadline Time: <%= element.deadline %></li>
-                    <li>Posted By: <%= element.postedBy %> </li>
-                    <li>Students Attended: <%= element.attendedBy.length %>  </li>
+                    <li class="att-title"><%= element.course %></li>
+                    <li class="att-sub"><%= element.deadline %> </li>    
+                    <li class="att-detail"><strong>Batch: </strong> <%= element.batch %></li>
+                    <li class="att-detail"><strong>Posted By: </strong><%= element.postedBy %></li>
+                    <li class="att-detail"><strong>Deadline: </strong><%= element.deadline %> </li>
+                    <li class="att-detail"><strong>Students Attended: </strong> <%= element.attendedBy.length %>  </li>
                 </ul>
                 <% if (element.attendedBy.includes(user.username)) { %>
-                    <button type="submit" class="btn btn-secondary">Attendance Given</button>
+                    <button type="submit" class="btn btn-secondary btn-block">Attendance Given</button>
                 <% } else { %>
                 <form action="/giveAtt/<%= element._id %>" method="POST"> 
-                    <button type="submit" class="btn btn-primary">Give Attendance</button>
+                    <button type="submit" class="btn btn-danger btn-block" disabled>Attendance Not Given</button>
                 </form>
                 <% } %>
+                <br>
             </div>    
         </div>
         <hr>
-    <% }) %> 
+    <% }) %>
+  </div> 
+</div>
+</div>
+</div>
+      
+
 <% } %>
 
 </div>
