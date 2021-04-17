@@ -1,28 +1,44 @@
 <%- include("partials/header"); -%>
 
-<h1>Details About the Attendance</h1>
-<ul>
-    <li>Batch: <%= element.batch %></li>
-    <li>Course: <%= element.course %></li>
-    <li>Deadline Time: <%= element.deadline %></li>
-    <li>Posted By: <%= element.postedBy %> </li>
-    <li>Students Attended: <%= element.attendedBy.length %></li>
-</ul>
-<h1>Students Attended:</h1>
-<ul>
-<% element.attendedBy.forEach(student => { %>
-    <li><%= student %> </li>
-<% }) %>
-</ul>
-<a href="/edit/<%= element._id %>"><button class="btn btn-primary">Edit</button></a>
-<a href="/delete/<%= element._id %>"><button class="btn btn-danger">Delete</button></a>
+<div class = "container">
+    <div class = "container rounded bg-original"> 
+        <div class = "row">
+          <div class = "col text-white">
+              <h1> Attendance Details </h1>
+          </div>
+    
+          <div class = "col">
+            <a href="/logout" class = "btn btn-success float-right my-2" type = "submit"> Logout </a>  
+            <a href="/dashboard"><button class="btn btn-secondary float-right my-2">Go Back</button></a>
+          </div>
+        </div>  
+      </div>
 
+    <div class = "row justify-content-around info-row ">
+        <div class = "col-5 card bg-white info-buttons">
+            <h2 class = "text-center text-original"> Details </h2>
+            <ul>
+                <li>Batch: <%= element.batch %></li>
+                <li>Course: <%= element.course %></li>
+                <li>Deadline Time: <%= element.deadline %></li>
+                <li>Posted By: <%= element.postedBy %> </li>
+                <li>Students Attended: <%= element.attendedBy.length %></li>
+            </ul>
+            <a href="/edit/<%= element._id %>"><button class="btn btn-primary">Edit</button></a>
+            <a href="/delete/<%= element._id %>"><button class="btn btn-danger">Delete</button></a>
+            
+        </div>
 
-
-
-
-
-
+        <div class = "col-5 card bg-white info-buttons">
+            <h2 class = "text-center"> Students Attended </h2>
+            <ul>
+                <% element.attendedBy.forEach(student => { %>
+                    <li><%= student %> </li>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+</div>
 
 
 

@@ -60,6 +60,7 @@
       </div>
     </div>
     <a class="btn btn-dark btn-lg" href="/submit" role="button">Create a new Attendance</a>
+  </div>
     <h1 class="mt-5 text-white"> Your Scheduled Attendances</h1>
 
     <div class="row">
@@ -73,13 +74,12 @@
                   <li class="att-detail"><strong>Deadline: </strong><%= element.deadline %> </li>
                   <li class="att-detail"><strong>Students Attended: </strong> <%= element.attendedBy.length %>  </li>
                 </ul>
-                <div class="btn-group" role="group" aria-label="Options">
-                  <a class="btn btn-warning" href="/edit/<%= element._id %>">Edit</a>
-                  <a class="btn btn-danger" href="/delete/<%= element._id %>">Delete</a>
-                  <a class="btn btn-primary" href="/detail/<%= element._id %>">Details</a>
+                <div class="btn-group btn-group-lg" role="group" aria-label="Options">
+                  <a class="btn btn-warning btn-lg" href="/edit/<%= element._id %>">Edit</a>
+                  <a class="btn btn-danger btn-lg" href="/delete/<%= element._id %>">Delete</a>
+                  <a class="btn btn-primary btn-lg" href="/detail/<%= element._id %>">Details</a>
                 </div>  
             </div>    
-        
         <hr>
     <% }) %>
     </div>
@@ -141,7 +141,7 @@
                     <li class="att-detail"><strong>Students Attended: </strong> <%= element.attendedBy.length %>  </li>
                 </ul>
                 <% if (element.attendedBy.includes(user.username)) { %>
-                    <button type="submit" class="btn btn-secondary" disabled >Attendance Given</button>
+                    <button type="submit" class="btn btn-secondary btn-block" disabled>Attendance Given</button>
                 <% } else { %>
                 <form action="/giveAtt/<%= element._id %>" method="POST"> 
                     <button type="submit" class="btn btn-primary btn-block">Give Attendance</button>
@@ -152,7 +152,7 @@
         </div>
         <hr>
     <% }) %>
-  </div>
+    </div>
   </div> 
 
   <div class="col-md-6">

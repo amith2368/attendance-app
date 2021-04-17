@@ -96,9 +96,12 @@ passport.use(new GoogleStrategy({
 //////////////////////////////////APP ROUTES/////////////////////////////////////////
 
 app.get("/", function(req, res){
-    res.render("home");
+    res.render("home", {error: false});
 });
 
+app.get("/errlogin", function(req, res) {
+    res.render("home", {error: true})
+});
 
 app.get("/dashboard", function(req, res) {
     if (req.isAuthenticated()) {
@@ -190,7 +193,7 @@ app.post("/login", function (req, res) {
         if (err) {
             console.login(err)
         } else {
-            passport.authenticate("local")(req, res, function(){
+            passport.authenticate("local", {failureRedirect: "/errlogin"})(req, res, function(){
                 res.redirect("/dashboard");
             });
         }
@@ -263,6 +266,23 @@ app.post("/submit", function(req, res) {
     attendance.save();
     res.redirect("/dashboard");
 });
+
+app.post("/edit/:attID", function(req, res) {
+    Attendance.findByIdAndUpdate(req.params.attID, 
+        {
+            batch: req.body.batch,
+            course: req.body.course,
+            deadline: req.body.dd 
+        }, (err, updated) => {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log("Updated" + updated);
+                res.redirect("/dashboard");
+            }
+        });
+});
+
 
 
 app.post("/giveAtt/:attID", function(req, res) {

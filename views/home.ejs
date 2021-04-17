@@ -3,15 +3,23 @@
     <section class="home-page">
         <div class="container-fluid">         
             <div class="row">
-                <div class="col-md-6 login-pic">
+                <div class="col-md-6 login-pic text-original">
                     <span class="heading-span">Welcome to</span>
                     <h1 class="heading">iAttendance App</h1>
                 </div>
-                <div class="col-md-6 login-detail text-white text-center">
+                <div class="col-md-6 login-detail text-original text-center">
                     <h1>Sign-In</h1>
                     <form class="mt-3" action="/login" method="POST">
                         <a class="btn btn-lg btn-original" href="/auth/google" role="button"><i class="fab fa-google"></i> Sign in with Google</a>
                         <p>Or Sign up with your Email</p>
+                        <% if (error) { %>
+                            <div class="alert alert-light alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> You have entered wrong username/password.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        <% } %>
                         <label class="form-label" for="username">Username</label>
                         <input class="form-control mx-auto text-center" type="text" name="username">
                         <label class="form-label" for="password">Password</label>

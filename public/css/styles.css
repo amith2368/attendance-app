@@ -30,7 +30,7 @@ ul {
 }
 
 .login-detail {
-  padding-top: 5%;
+  padding-top: 8%;
 }
 
 .login-detail .form-control {
@@ -45,8 +45,15 @@ ul {
   margin-left: 10%;
 }
 
+.register-body {
+  background-color:rgba(255,255,255,0.05);
+  color: #bfb3c2;
+  width: 70%;
+}
+
 .btn-original {
-  background-color: #3f1a48;
+  border: none;
+  background-color:#55345d;
   color: #bfb3c2; 
   border: none;
 }
@@ -59,10 +66,16 @@ ul {
 }
 
 .btn-original:hover {
+  background-color: #3f1a48;
   color: #fff;
 }
 
-
+.btn-group {
+  position: absolute;
+  left: 50%;
+  bottom: -4%;
+  z-index: 1;
+}
 
 .rounded
 { 
@@ -99,4 +112,37 @@ ul {
 .card {
   margin: 5px;
   display: block;
+  margin-bottom: 20px;
+}
+
+.info-row
+{ position : relative;
+  margin-top : -60px;       
+}
+
+.submit-card {
+  padding: 10px;
+  padding-top: 5%;
+  color: #240b36;
+  margin-top: 10%;
+}
+
+.subhead-card {
+  border: none;
+  display: inline;
+  position: absolute;
+  top: -30px;
+  padding: 10px;
+  background: #c31432;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #240b36, #c31432);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #240b36, #c31432); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #bfb3c2; 
+  font-size: 30px;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: bold;
+
+}
+
+.text-original {
+  color: #bfb3c2;
 }
